@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Noto Sans', sans-serif; background: #f4f7fb; padding: 30px 40px; width: 1560px; }
+  h1 { color: #003b73; font-size: 26px; margin-bottom: 4px; }
+  .sub { color: #5a6b7b; font-size: 14px; margin-bottom: 26px; }
+  .linha { display: flex; align-items: stretch; gap: 0; margin-bottom: 0; }
+  .bloco { border-radius: 12px; padding: 14px 16px; min-width: 175px; flex: 1; box-shadow: 0 3px 12px rgba(13,43,73,.10); border: 2px solid transparent; }
+  .bloco h3 { font-size: 15.5px; margin-bottom: 6px; color: #0d2b49; }
+  .bloco ul { list-style: none; font-size: 12.5px; color: #324355; line-height: 1.55; }
+  .bloco ul li::before { content: "• "; color: #0077b6; font-weight: bold; }
+  .fontes { background: #fff7e6; border-color: #f2c94c; }
+  .bronze { background: #fdeee7; border-color: #d19a6a; }
+  .prata  { background: #eef4fb; border-color: #6ea8d8; }
+  .ouro   { background: #fff8d9; border-color: #d8b53a; }
+  .dw     { background: #e9f7f1; border-color: #34a87c; }
+  .nlp    { background: #f3edfb; border-color: #9a6fd0; }
+  .bi     { background: #e7f0fb; border-color: #00529b; }
+  .seta { display: flex; align-items: center; padding: 0 6px; }
+  .seta svg { width: 46px; height: 30px; }
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; color: #fff; border-radius: 6px; padding: 2px 8px; margin-bottom: 8px; }
+  .infra { margin-top: 30px; display: flex; gap: 18px; }
+  .infra .bloco { flex: 1; background: #f2f4f7; border-color: #aab6c2; }
+  .legenda { margin-top: 24px; font-size: 12px; color: #43536b; background: #ffffff; border: 1px dashed #b8c6d5; border-radius: 10px; padding: 12px 16px; }
+  .legenda b { color: #00529b; }
+</style>
+</head>
+<body>
+  <h1>Arquitetura Implementada — BI de Internações Hospitalares HUOL/UFRN</h1>
+  <div class="sub">Pipeline ETL em camadas · Data Lake S3-compatível (MinIO) · Data Warehouse PostgreSQL (esquema estrela) · NLP · Dashboard Streamlit</div>
+
+  <div class="linha">
+    <div class="bloco fontes">
+      <div class="tag" style="background:#c58c1e">FONTES OFICIAIS</div>
+      <h3>Portal gov.br — HUOL/UFRN</h3>
+      <ul>
+        <li>8 CSVs trimestrais (2024–2025)</li>
+        <li>8 PDFs originais</li>
+        <li>Base “06. Internações Hospitalares”</li>
+        <li>Referência IBGE (5.571 municípios)</li>
+        <li>Instagram Graph API (módulo NLP)</li>
+      </ul>
+    </div>
+    <div class="seta"><svg viewBox="0 0 46 30"><path d="M2 15 H36" stroke="#64748b" stroke-width="2.5" fill="none"/><path d="M30 7 L40 15 L30 23" stroke="#64748b" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+    <div class="bloco bronze">
+      <div class="tag" style="background:#b96a41">BRONZE — dados brutos</div>
+      <h3>Ingestão fiel (bronze_ingest.py)</h3>
+      <ul>
+        <li>Cópias originais sem alteração</li>
+        <li>hash SHA-256 + manifestos JSON</li>
+        <li>origem, período e data de ingestão</li>
+        <li>ingestão idempotente</li>
+      </ul>
+    </div>
+    <div class="seta"><svg viewBox="0 0 46 30"><path d="M2 15 H36" stroke="#64748b" stroke-width="2.5" fill="none"/><path d="M30 7 L40 15 L30 23" stroke="#64748b" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+    <div class="bloco prata">
+      <div class="tag" style="background:#3f77a8">PRATA — dados tratados</div>
+      <h3>Padronização (silver_transform.py)</h3>
+      <ul>
+        <li>datas/idades tipadas; sexo e especialidade normalizados</li>
+        <li>município validado no IBGE + classificação geográfica</li>
+        <li>faixas etárias; flags de qualidade</li>
+        <li>Parquet particionado por ano</li>
+      </ul>
+    </div>
+    <div class="seta"><svg viewBox="0 0 46 30"><path d="M2 15 H36" stroke="#64748b" stroke-width="2.5" fill="none"/><path d="M30 7 L40 15 L30 23" stroke="#64748b" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+    <div class="bloco ouro">
+      <div class="tag" style="background:#a88f21">OURO — dados analíticos</div>
+      <h3>Curadoria (gold_curate.py)</h3>
+      <ul>
+        <li>11 conjuntos analíticos Parquet</li>
+        <li>por especialidade, município, sexo, faixa</li>
+        <li>mês/trimestre/ano; 2024×2025</li>
+        <li>indicadores gerais + qualidade</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="linha" style="margin-top:22px">
+    <div class="bloco dw">
+      <div class="tag" style="background:#2b8a63">DATA WAREHOUSE — PostgreSQL</div>
+      <h3>Esquema estrela (schema.sql + load_warehouse.py)</h3>
+      <ul>
+        <li><b>Fato_Internacao</b>: 16.046 eventos (qtd = 1/evento, hash rastreável)</li>
+        <li><b>Dim_Tempo</b> · <b>Dim_Especialidade</b> · <b>Dim_Municipio</b> · <b>Dim_Demografia</b></li>
+        <li>chaves substitutas, membros desconhecidos (−1)</li>
+        <li>carga idempotente; vista vw_internacoes</li>
+      </ul>
+    </div>
+    <div class="seta"><svg viewBox="0 0 46 30"><path d="M2 15 H36" stroke="#64748b" stroke-width="2.5" fill="none"/><path d="M30 7 L40 15 L30 23" stroke="#64748b" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+    <div class="bloco bi">
+      <div class="tag" style="background:#00529b">DASHBOARD — Streamlit + Plotly</div>
+      <h3>7 telas analíticas (app.py)</h3>
+      <ul>
+        <li>Visão Executiva · Especialidades · Demografia</li>
+        <li>Geografia · Sazonalidade · Sentimentos · Insights</li>
+        <li>filtros globais SQL (ano, trimestre, mês, especialidade, município, sexo, faixa)</li>
+        <li>formatação brasileira; estados vazios explícitos</li>
+      </ul>
+    </div>
+    <div class="seta"><svg viewBox="0 0 46 30"><path d="M2 15 H36" stroke="#64748b" stroke-width="2.5" fill="none"/><path d="M30 7 L40 15 L30 23" stroke="#64748b" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+    <div class="bloco nlp">
+      <div class="tag" style="background:#7d4fb5">NLP — comentários do Instagram</div>
+      <h3>instagram_client · clean_text · sentiment · topics</h3>
+      <ul>
+        <li>Instagram Graph API oficial (token/permissões)</li>
+        <li>limpeza textual + lematização pt-BR</li>
+        <li>sentimentos: cardiffnlp/twitter-xlm-roberta-base</li>
+        <li>temas: TF-IDF (1–2 gramas) por sentimento</li>
+        <li>sem dados autorizados: estado pendente (sem simulação)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="infra">
+    <div class="bloco">
+      <div class="tag" style="background:#64748b">INFRAESTRUTURA</div>
+      <h3>docker-compose.yml</h3>
+      <ul><li>MinIO :9000 (API S3) + Console :9001</li><li>PostgreSQL 16 :5432 (huol_dw)</li><li>volumes persistentes ./volumes/</li></ul>
+    </div>
+    <div class="bloco">
+      <div class="tag" style="background:#64748b">QUALIDADE</div>
+      <h3>tests/ (pytest)</h3>
+      <ul><li>leitura, conversões, normalizações</li><li>integridade referencial fato × dimensões</li><li>consistência DW × Ouro; idempotência</li></ul>
+    </div>
+    <div class="bloco">
+      <div class="tag" style="background:#64748b">GOVERNANÇA</div>
+      <h3>LGPD e rastreabilidade</h3>
+      <ul><li>sem identificador de paciente (base anonimizada)</li><li>texto original preservado no NLP</li><li>manifestos + hash_linha + logs</li></ul>
+    </div>
+  </div>
+
+  <div class="legenda">
+    <b>Fluxo:</b> arquivos oficiais → Bronze (cópia fiel) → Prata (padronização/validação IBGE, Parquet) → Ouro (agregados analíticos) → Data Warehouse (estrela) → Dashboard.
+    <b>Camada NLP</b> alimenta a Ouro quando comentários autorizados forem carregados. Armazenamento S3-compatível (MinIO em produção; SeaweedFS validado em desenvolvimento, mesma API S3).
+  </div>
+</body>
+</html>

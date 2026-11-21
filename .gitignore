@@ -1,0 +1,25 @@
+# Ambiente virtual / caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Credenciais — nunca versionar
+.env
+
+# Dados reconstituíveis e artefatos locais
+data/lake/
+data/processed/
+data/nlp/*.csv
+logs/
+*.log
+
+# Do Docker Compose
+volumes/
+
+# Sistema
+.DS_Store
+Thumbs.db

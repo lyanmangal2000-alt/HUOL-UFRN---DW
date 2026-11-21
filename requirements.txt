@@ -1,0 +1,31 @@
+# Processamento de dados
+pandas>=2.2
+numpy>=1.26
+pyarrow>=16.0
+requests>=2.31
+
+# Data Lake (S3/MinIO)
+boto3>=1.34
+s3fs>=2024.2.0
+fsspec>=2024.2.0
+
+# Data Warehouse
+SQLAlchemy>=2.0
+psycopg2-binary>=2.9
+
+# NLP
+scikit-learn>=1.4
+transformers>=4.40          # modelo cardiffnlp/twitter-xlm-roberta-base-sentiment
+torch>=2.2                  # inferência do modelo de sentimentos
+spacy>=3.7                  # lematização em português (pt_core_news_sm)
+unidecode>=1.3
+
+# Dashboard
+streamlit>=1.35
+plotly>=5.22
+
+# Qualidade e testes
+pytest>=8.0
+
+# Nota: o modelo de linguagem e o spaCy pt_core_news_sm são baixados na
+# primeira execução (ver README, seção "Execução do NLP").

@@ -6,7 +6,7 @@ Cada regra indica **o que é feito, por quê e onde está implementada**. Princ�
 
 | # | Regra |
 |---|---|
-| 1.1 | Os 16 arquivos oficiais (8 CSV + 8 PDF) são copiados **byte a byte** para `bronze/hospital/<ano>/<trimestre>/`; nenhum conteúdo é alterado. |
+| 1.1 | Os arquivos CSV/PDF reconhecidos e disponíveis em `data/raw/` são copiados **byte a byte** para `bronze/hospital/<ano>/<trimestre>/`; nenhum conteúdo é alterado. Este repositório inclui os 8 CSVs; os PDFs não são incluídos. |
 | 1.2 | Cada arquivo gera manifesto JSON (`bronze/manifests/...`) com SHA-256, tamanho, URL de origem, período declarado e data de ingestão (UTC). |
 | 1.3 | Ingestão **idempotente**: arquivo com mesmo hash existente é pulado; hash diferente marca `reingestao_com_hash_diferente=true`. |
 

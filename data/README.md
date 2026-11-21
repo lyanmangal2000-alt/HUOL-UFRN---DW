@@ -1,9 +1,11 @@
 # Pasta `data/`
 
 ## `raw/` — fontes oficiais (NÃO modificar)
-Os 16 arquivos oficiais do portal de dados abertos do HUOL/UFRN (gov.br):
-- 8 CSVs trimestrais (jan/2024 – dez/2025), ISO-8859-1, separador `;`;
-- 8 PDFs publicados pelo portal (preservados como evidência da origem).
+Os 8 CSVs trimestrais oficiais do portal de dados abertos do HUOL/UFRN (gov.br),
+de jan/2024 a dez/2025, ISO-8859-1, separador `;`.
+
+Os PDFs originais não são incluídos neste repositório. A ingestão Bronze aceita
+CSV e PDF quando presentes localmente, mas este projeto usa os 8 CSVs.
 
 São a entrada da ingestão Bronze. A estrutura e os nomes devem ser preservados.
 

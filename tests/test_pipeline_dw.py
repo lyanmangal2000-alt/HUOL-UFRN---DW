@@ -202,9 +202,16 @@ def test_montar_where_sem_filtros():
 # ------------------------------------------------------------- idempotência S3
 @requer_s3
 def test_bronze_idempotente():
-    from src.etl.bronze_ingest import executar
+    from src.etl.bronze_ingest import PADRAO_NOME, executar
 
+    arquivos_entrada = [
+        path
+        for path in (RAIZ / "data" / "raw").iterdir()
+        if path.is_file() and PADRAO_NOME.search(path.name)
+    ]
     primeira = executar()
     segunda = executar()
-    assert len(primeira) == len(segunda) == 16
+    assert len(arquivos_entrada) == 8
+    assert all(path.suffix.lower() == ".csv" for path in arquivos_entrada)
+    assert len(primeira) == len(segunda) == len(arquivos_entrada)
     assert not any(m["reingestao_com_hash_diferente"] for m in segunda)

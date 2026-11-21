@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-"""ETL — Camada BRONZE: ingestão dos arquivos originais do portal de dados abertos.
+"""ETL — Camada BRONZE: ingestão dos arquivos do portal de dados abertos.
 
-Preserva os 16 arquivos oficiais (8 CSVs + 8 PDFs) sem nenhuma alteração de
-conteúdo, no armazenamento S3-compatível (MinIO) ou no espelho local, e
-registra um manifesto de proveniência por arquivo (hash SHA-256, tamanho,
-origem, período declarado, data de ingestão).
+Preserva os arquivos CSV/PDF reconhecidos e disponíveis em data/raw, sem
+alteração de conteúdo, no armazenamento S3-compatível ou no espelho local.
+Este repositório inclui os 8 CSVs; os PDFs oficiais não são incluídos.
+Cada arquivo ingerido gera um manifesto de proveniência (hash SHA-256,
+tamanho, origem, período declarado e data de ingestão).
 
 Execução (a partir da raiz do projeto):
     python -m src.etl.bronze_ingest

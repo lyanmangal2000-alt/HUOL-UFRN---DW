@@ -1,6 +1,6 @@
 # Relatório de qualidade dos dados — HUOL/UFRN BI
 
-**Fonte processada:** CSVs originais do portal oficial de dados abertos do HUOL/UFRN (gov.br), base "06. Internações Hospitalares" — **não houve necessidade de extração de PDF** (ingestão preferencial por CSV, conforme enunciado; os PDFs foram preservados na Bronze como evidência).
+**Fonte processada:** 8 CSVs do portal oficial de dados abertos do HUOL/UFRN (gov.br), base "06. Internações Hospitalares". Os PDFs originais não são incluídos no repositório nem são necessários para estas análises.
 
 **Data da extração/coleta:** 17/11/2026 · **Cobertura:** 01/01/2024 a 31/12/2025 (8 trimestres).
 
@@ -8,7 +8,7 @@
 
 | Métrica | Valor |
 |---|---|
-| Arquivos recebidos | 8 CSVs + 8 PDFs (16 arquivos, todos com SHA-256 registrado) |
+| Arquivos recebidos | 8 CSVs (hashes SHA-256 registrados nos manifestos Bronze) |
 | Registros recebidos | **16.046** |
 | Registros processados (Prata) | **16.046** (100%) |
 | Registros rejeitados | **0** |

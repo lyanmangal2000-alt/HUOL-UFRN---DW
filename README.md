@@ -62,7 +62,7 @@ Componentes NLP: `instagram_client` (Graph API) → `clean_text` → `sentiment`
 ```
 huol-bi-analytics/
 ├── data/
-│   ├── raw/                 # 8 CSVs + 8 PDFs oficiais (fonte da ingestão)
+│   ├── raw/                 # 8 CSVs oficiais (PDFs não incluídos no repositório)
 │   ├── reference/           # listas IBGE (Brasil e RN)
 │   ├── processed/           # Parquet/relatórios gerados (reconstruíveis)
 │   └── README.md
@@ -74,7 +74,7 @@ huol-bi-analytics/
 │   └── utils/               # config · storage (S3/LOCAL) · ibge · especialidades · faixas_etarias
 ├── sql/                     # perguntas de negócio · qualidade · validação DW×Ouro
 ├── tests/                   # 49 testes pytest
-├── docs/                    # arquitetura/, imagens/, dicionário, regras, qualidade, guia de gravação
+├── docs/                    # arquitetura/, imagens/, dicionário, regras e qualidade
 ├── scripts/                 # utilitários de operação
 ├── docker-compose.yml       # MinIO + PostgreSQL
 ├── requirements.txt
@@ -112,7 +112,7 @@ docker compose ps             # aguarde ambos "healthy"
 python -m spacy download pt_core_news_sm
 
 # 5. Pipeline ETL (ordem obrigatória)
-python -m src.etl.bronze_ingest       # Bronze: 16 arquivos + manifestos
+python -m src.etl.bronze_ingest       # Bronze: 8 CSVs incluídos + manifestos
 python -m src.etl.silver_transform    # Prata: padronização + Parquet
 python -m src.etl.gold_curate         # Ouro: 11 conjuntos analíticos
 python -m src.warehouse.load_warehouse  # DW: estrela + carga idempotente
@@ -204,7 +204,7 @@ Arquivos completos: `sql/01_perguntas_negocio.sql`, `sql/02_qualidade_dados.sql`
 
 - As perguntas 5–6 (sentimentos) permanecem em estado de preparação enquanto não houver acesso autorizado à Instagram Graph API; o módulo está pronto e testado (fixtures apenas para testes, claramente marcadas);
 - A coleta dos CSVs foi feita em 17/11/2026; republicações no portal podem atualizar arquivos — reexecute o ETL (idempotente) para refletir;
-- Guia completo de gravação do vídeo de apresentação: `docs/guia_gravacao.pdf`.
+- Os PDFs originais do portal não são incluídos; a ingestão e as análises usam os 8 CSVs.
 
 ## 14. Referências
 
